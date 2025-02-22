@@ -9,13 +9,14 @@ import time
 
 
 def get_tcdd_stations():
-    options = Options()
+    options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Tarayıcıyı arka planda çalıştır
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    service = Service(executable_path="chromedriver.exe")
+    driver = webdriver.Chrome(service=service,options=options)
 
-    url = "https://ebilet.tcddtasimacilik.gov.tr/"
+    url = "https://ebilet.tcddtasimacilik.gov.tr/istasyon-tren-danisma"
     driver.get(url)
 
     try:
@@ -30,7 +31,6 @@ def get_tcdd_stations():
         station_elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".textLocation"))
         )
-
         stations = [station.text.strip() for station in station_elements if station.text.strip()]
 
     except Exception as e:
